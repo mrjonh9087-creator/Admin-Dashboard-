@@ -15,32 +15,36 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
 
-      - name: Locate Project & Prepare Web Assets
+      - name: Prepare Clean Workspace & Build Web
         run: |
+          mkdir -p /tmp/app_build
           if [ -d "Admin Dashboard" ]; then
-            cd "Admin Dashboard"
+            cp -r "Admin Dashboard"/. /tmp/app_build/
+          else
+            cp -r . /tmp/app_build/
           fi
+          cd /tmp/app_build
           if [ ! -f "package.json" ] && [ ! -f "index.html" ]; then
             FOUND=$(find . -maxdepth 3 \( -name "package.json" -o -name "index.html" \) -not -path "*/node_modules/*" | head -n 1)
             if [ -n "$FOUND" ]; then
               cd "$(dirname "$FOUND")"
             fi
           fi
-          PROJECT_DIR=$(pwd)
-          echo "PROJECT_DIR=$PROJECT_DIR" >> $GITHUB_ENV
+          WORK_DIR=$(pwd)
+          echo "WORK_DIR=$WORK_DIR" >> $GITHUB_ENV
 
           if [ -f "package.json" ]; then
             npm install --legacy-peer-deps
-            npm run build || npx vite build
+            npm run build || npx vite build || true
             if [ -d "dist" ]; then
               echo "WEB_DIR=dist" >> $GITHUB_ENV
             elif [ -d "build" ]; then
               echo "WEB_DIR=build" >> $GITHUB_ENV
             else
               mkdir -p www
-              cp -r *.html *.js *.css assets src 2>/dev/null || true
+              find . -maxdepth 1 -not -name '.' -not -name 'www' -not -name 'node_modules' -not -name '.git' -not -name '.github' -exec cp -r {} www/ \;
               echo "WEB_DIR=www" >> $GITHUB_ENV
             fi
           else
@@ -52,7 +56,7 @@ jobs:
 
       - name: Setup Capacitor iOS
         run: |
-          cd "$PROJECT_DIR"
+          cd "$WORK_DIR"
           npm install --legacy-peer-deps @capacitor/core @capacitor/cli @capacitor/ios
           rm -f capacitor.config.json capacitor.config.ts
           npx cap init "Benzto2 Admin" "com.benzto2.admin" --web-dir="$WEB_DIR"
@@ -62,22 +66,22 @@ jobs:
 
       - name: Build Unsigned Archive
         run: |
-          cd "$PROJECT_DIR"
+          cd "$WORK_DIR"
           if [ -d "ios/App/App.xcworkspace" ]; then
-            xcodebuild -workspace ios/App/App.xcworkspace -scheme App -configuration Release -sdk iphoneos -archivePath "$PROJECT_DIR/build/App.xcarchive" archive DEVELOPMENT_TEAM="" CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO
+            xcodebuild -workspace ios/App/App.xcworkspace -scheme App -configuration Release -sdk iphoneos -destination 'generic/platform=iOS' -archivePath "$WORK_DIR/build/App.xcarchive" archive DEVELOPMENT_TEAM="" CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO
           else
-            xcodebuild -project ios/App/App.xcodeproj -scheme App -configuration Release -sdk iphoneos -archivePath "$PROJECT_DIR/build/App.xcarchive" archive DEVELOPMENT_TEAM="" CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO
+            xcodebuild -project ios/App/App.xcodeproj -scheme App -configuration Release -sdk iphoneos -destination 'generic/platform=iOS' -archivePath "$WORK_DIR/build/App.xcarchive" archive DEVELOPMENT_TEAM="" CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO
           fi
 
       - name: Package IPA
         run: |
-          cd "$PROJECT_DIR"
+          cd "$WORK_DIR"
           mkdir -p Payload
           cp -r build/App.xcarchive/Products/Applications/App.app Payload/
-          zip -r Benzto2-Admin.ipa Payload
+          zip -r "$GITHUB_WORKSPACE/Benzto2-Admin.ipa" Payload
 
       - name: Upload IPA Artifact
         uses: actions/upload-artifact@v4
         with:
           name: Benzto2-Admin-IPA
-          path: ${{ env.PROJECT_DIR }}/Benzto2-Admin.ipa
+          path: Benzto2-Admin.ipa
