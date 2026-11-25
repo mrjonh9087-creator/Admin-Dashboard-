@@ -1,0 +1,11 @@
+{
+  "appId": "com.benzto2.admin",
+  "appName": "Benzto2 Admin",
+  "webDir": "dist",
+  "server": {
+    "androidScheme": "https"
+  },
+  "ios": {
+    "contentInset": "automatic"
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "name": "ModStore Telegram Bot Manager",
+  "description": "Professional Telegram Bot management dashboard for selling game mods, license keys, and automated deliveries with KHQR and ABA integration.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,69 @@
+{
+  "profiles": [
+    {
+      "userId": "8974773472",
+      "username": "ID:8974773472",
+      "profileId": "vip_8974773472",
+      "orderId": "ORD-9873",
+      "createdAt": "2026-11-25T10:12:23.210Z",
+      "revoked": true
+    },
+    {
+      "userId": "8974773472",
+      "username": "ID:8974773472",
+      "profileId": "vip_8974773472",
+      "orderId": "ORD-3380",
+      "createdAt": "2026-11-25T10:07:33.994Z"
+    }
+  ],
+  "orders": [
+    {
+      "id": "ORD-9804",
+      "modId": "mod-ios-vip",
+      "modName": "CONFIG IPHONE VIP (Smooth + Low Ping)",
+      "customerName": "Admin",
+      "customerTelegram": "@paypalsetup",
+      "customerChatId": 7272866492,
+      "amountUSD": 5,
+      "amountKHR": 20000,
+      "paymentMethod": "KHQR",
+      "status": "pending",
+      "createdAt": "2026-11-25 10:49"
+    },
+    {
+      "id": "ORD-9873",
+      "modId": "mod-ios-1device",
+      "modName": "CONFIG IPHONE VIP (Lifetime - 1 Device)",
+      "customerName": "Traa",
+      "customerTelegram": "ID:8974773472",
+      "customerChatId": 8974773472,
+      "amountUSD": 10,
+      "amountKHR": 40000,
+      "paymentMethod": "KHQR",
+      "status": "completed",
+      "createdAt": "2026-11-25 10:12",
+      "nextDnsProfileId": "vip_8974773472",
+      "generatedFileName": "Benzto2_VIP_1Device.mobileconfig"
+    },
+    {
+      "id": "ORD-3380",
+      "modId": "mod-ios-1device",
+      "modName": "📱 CONFIG IPHONE VIP (Lifetime - 1 Device)",
+      "customerName": "Traa",
+      "customerTelegram": "ID:8974773472",
+      "customerChatId": 8974773472,
+      "amountUSD": 10,
+      "amountKHR": 40000,
+      "paymentMethod": "KHQR",
+      "status": "completed",
+      "createdAt": "2026-11-25 10:07",
+      "nextDnsProfileId": "vip_8974773472",
+      "generatedFileName": "Benzto2_VIP_1Device.mobileconfig"
+    }
+  ],
+  "users": {
+    "8974773472": 8974773472,
+    "@paypalsetup": 7272866492,
+    "7272866492": 7272866492
+  }
+}

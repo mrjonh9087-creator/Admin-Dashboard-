@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>PayloadContent</key>
+	<array>
+		<dict>
+			<key>DNSSettings</key>
+			<dict>
+				<key>DNSProtocol</key>
+				<string>HTTPS</string>
+				<key>ServerAddresses</key>
+				<array>
+					<string>1.1.1.1</string>
+					<string>8.8.8.8</string>
+					<string>1.0.0.1</string>
+					<string>8.8.4.4</string>
+				</array>
+				<key>ServerURL</key>
+				<string>https://cloudflare-dns.com/dns-query</string>
+			</dict>
+			<key>OnDemandRules</key>
+			<array>
+				<dict>
+					<key>Action</key>
+					<string>Connect</string>
+				</dict>
+			</array>
+			<key>PayloadDescription</key>
+			<string>Low-Latency Gaming &amp; Fast Network DNS</string>
+			<key>PayloadDisplayName</key>
+			<string>𝐂𝐎𝐍𝐅𝐈𝐆  𝐈𝐏𝐇𝐎𝐍𝐄  ⭐️</string>
+			<key>PayloadIdentifier</key>
+			<string>com.benzto2.dnsSettings.managed.A6C06555-7F82-40CC-9507-2518A95217EA</string>
+			<key>PayloadOrganization</key>
+			<string>Benzto2 VIP</string>
+			<key>PayloadType</key>
+			<string>com.apple.dnsSettings.managed</string>
+			<key>PayloadUUID</key>
+			<string>A6C06555-7F82-40CC-9507-2518A95217EA</string>
+			<key>PayloadVersion</key>
+			<integer>1</integer>
+		</dict>
+	</array>
+	<key>PayloadDescription</key>
+	<string>𝗖𝗢𝗡𝗙𝗜𝗚  𝗜𝗣𝗛𝗢𝐍𝗘  ⭐️
+ &gt;&gt; 𝗟𝗢𝗪 𝗣𝗜𝗡𝗚 &amp; 𝗦𝗠𝗢𝗢𝗧𝗛 𝗡𝗘𝗧𝗪𝗢𝗥𝗞 ✅
+ 𝗔𝗱𝗺𝗶𝗻𝘀 𝗗𝗲𝘃 🧑‍💼
+ 𝗬𝗧 : 𝗕𝗲𝗻𝘇𝘁𝗼𝟯
+ 𝗧𝗲𝗹𝗲 : 𝗽𝗮𝘆𝗽𝗮𝗹𝘀𝗲𝘁𝘂𝗽
+ 𝗧𝗵𝗮𝗻𝗸𝘀 𝗳𝗼𝗿 𝘀𝘂𝗽𝗽𝗼𝗿𝘁 𝗮𝗱𝗺𝗶𝗻 ✅</string>
+	<key>PayloadDisplayName</key>
+	<string>𝐂𝐎𝐍𝐅𝐈𝐆  𝐈𝐏𝐇𝐎𝐍𝐄  ⭐️</string>
+	<key>PayloadIdentifier</key>
+	<string>com.benzto2.apple-dns</string>
+	<key>PayloadOrganization</key>
+	<string>Benzto2 VIP</string>
+	<key>PayloadScope</key>
+	<string>User</string>
+	<key>PayloadType</key>
+	<string>Configuration</string>
+	<key>PayloadUUID</key>
+	<string>2F2B145E-24B5-4AAA-ACA1-623E73361AAE</string>
+	<key>PayloadVersion</key>
+	<integer>1</integer>
+</dict>
+</plist>

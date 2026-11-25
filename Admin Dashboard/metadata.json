@@ -1,0 +1,6 @@
+{
+  "name": "Benzto2 ModStore Bot Manager",
+  "description": "Professional Telegram Bot management dashboard for selling game mods, iOS DNS profiles, KHQR payments, and automated license delivery.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

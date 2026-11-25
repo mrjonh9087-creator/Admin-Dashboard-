@@ -1,0 +1,113 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "Private Google-authenticated user profile for admin console sessions.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "maxLength": 254
+        },
+        "displayName": {
+          "type": "string",
+          "maxLength": 120
+        },
+        "photoURL": {
+          "type": "string",
+          "maxLength": 500
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": ["uid", "email", "displayName", "createdAt", "updatedAt"]
+    },
+    "AuthorizedAdmin": {
+      "title": "AuthorizedAdmin",
+      "description": "Allowlisted Gmail address granted access to Benzto2 Admin Dashboard.",
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string",
+          "format": "email",
+          "maxLength": 254
+        },
+        "role": {
+          "type": "string",
+          "enum": ["super_admin", "admin"]
+        },
+        "addedByUid": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "addedByEmail": {
+          "type": "string",
+          "format": "email",
+          "maxLength": 254
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": ["email", "role", "addedByUid", "addedByEmail", "createdAt"]
+    },
+    "LoginAudit": {
+      "title": "LoginAudit",
+      "description": "Immutable login audit log recording Gmail sign-in attempts.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "maxLength": 254
+        },
+        "displayName": {
+          "type": "string",
+          "maxLength": 120
+        },
+        "status": {
+          "type": "string",
+          "enum": ["granted", "denied"]
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": ["uid", "email", "displayName", "status", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/UserProfile" },
+      "description": "Private authenticated user profiles keyed by Firebase Auth UID."
+    },
+    "/authorizedAdmins/{adminId}": {
+      "schema": { "$ref": "#/entities/AuthorizedAdmin" },
+      "description": "Admin Gmail allowlist managed by the super admin."
+    },
+    "/loginAudits/{auditId}": {
+      "schema": { "$ref": "#/entities/LoginAudit" },
+      "description": "Immutable authentication audit trail."
+    }
+  }
+}
