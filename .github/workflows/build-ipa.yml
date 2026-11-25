@@ -32,14 +32,15 @@ jobs:
           echo "PROJECT_DIR=$PROJECT_DIR" >> $GITHUB_ENV
 
           if [ -f "package.json" ]; then
-            npm install
-            npm run build
+            npm install --legacy-peer-deps
+            npm run build || npx vite build
             if [ -d "dist" ]; then
               echo "WEB_DIR=dist" >> $GITHUB_ENV
             elif [ -d "build" ]; then
               echo "WEB_DIR=build" >> $GITHUB_ENV
             else
-              mkdir -p www && cp -r *.html www/ 2>/dev/null || true
+              mkdir -p www
+              cp -r *.html *.js *.css assets src 2>/dev/null || true
               echo "WEB_DIR=www" >> $GITHUB_ENV
             fi
           else
@@ -52,13 +53,11 @@ jobs:
       - name: Setup Capacitor iOS
         run: |
           cd "$PROJECT_DIR"
-          npm install @capacitor/core @capacitor/cli @capacitor/ios
-          if [ ! -f "capacitor.config.json" ] && [ ! -f "capacitor.config.ts" ]; then
-            npx cap init "Benzto2 Admin" "com.benzto2.admin" --web-dir="$WEB_DIR"
-          fi
-          if [ ! -d "ios" ]; then
-            npx cap add ios
-          fi
+          npm install --legacy-peer-deps @capacitor/core @capacitor/cli @capacitor/ios
+          rm -f capacitor.config.json capacitor.config.ts
+          npx cap init "Benzto2 Admin" "com.benzto2.admin" --web-dir="$WEB_DIR"
+          rm -rf ios
+          npx cap add ios
           npx cap sync ios
 
       - name: Build Unsigned Archive
