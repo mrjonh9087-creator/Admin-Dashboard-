@@ -1,0 +1,84 @@
+name: Build iOS IPA
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main, master ]
+
+jobs:
+  build-ipa:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Locate Project & Prepare Web Assets
+        run: |
+          if [ -d "Admin Dashboard" ]; then
+            cd "Admin Dashboard"
+          fi
+          if [ ! -f "package.json" ] && [ ! -f "index.html" ]; then
+            FOUND=$(find . -maxdepth 3 \( -name "package.json" -o -name "index.html" \) -not -path "*/node_modules/*" | head -n 1)
+            if [ -n "$FOUND" ]; then
+              cd "$(dirname "$FOUND")"
+            fi
+          fi
+          PROJECT_DIR=$(pwd)
+          echo "PROJECT_DIR=$PROJECT_DIR" >> $GITHUB_ENV
+
+          if [ -f "package.json" ]; then
+            npm install
+            npm run build
+            if [ -d "dist" ]; then
+              echo "WEB_DIR=dist" >> $GITHUB_ENV
+            elif [ -d "build" ]; then
+              echo "WEB_DIR=build" >> $GITHUB_ENV
+            else
+              mkdir -p www && cp -r *.html www/ 2>/dev/null || true
+              echo "WEB_DIR=www" >> $GITHUB_ENV
+            fi
+          else
+            npm init -y
+            mkdir -p www
+            find . -maxdepth 1 -not -name '.' -not -name 'www' -not -name '.git' -not -name '.github' -not -name 'package.json' -exec cp -r {} www/ \;
+            echo "WEB_DIR=www" >> $GITHUB_ENV
+          fi
+
+      - name: Setup Capacitor iOS
+        run: |
+          cd "$PROJECT_DIR"
+          npm install @capacitor/core @capacitor/cli @capacitor/ios
+          if [ ! -f "capacitor.config.json" ] && [ ! -f "capacitor.config.ts" ]; then
+            npx cap init "Benzto2 Admin" "com.benzto2.admin" --web-dir="$WEB_DIR"
+          fi
+          if [ ! -d "ios" ]; then
+            npx cap add ios
+          fi
+          npx cap sync ios
+
+      - name: Build Unsigned Archive
+        run: |
+          cd "$PROJECT_DIR"
+          if [ -d "ios/App/App.xcworkspace" ]; then
+            xcodebuild -workspace ios/App/App.xcworkspace -scheme App -configuration Release -sdk iphoneos -archivePath "$PROJECT_DIR/build/App.xcarchive" archive DEVELOPMENT_TEAM="" CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO
+          else
+            xcodebuild -project ios/App/App.xcodeproj -scheme App -configuration Release -sdk iphoneos -archivePath "$PROJECT_DIR/build/App.xcarchive" archive DEVELOPMENT_TEAM="" CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO
+          fi
+
+      - name: Package IPA
+        run: |
+          cd "$PROJECT_DIR"
+          mkdir -p Payload
+          cp -r build/App.xcarchive/Products/Applications/App.app Payload/
+          zip -r Benzto2-Admin.ipa Payload
+
+      - name: Upload IPA Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Benzto2-Admin-IPA
+          path: ${{ env.PROJECT_DIR }}/Benzto2-Admin.ipa
