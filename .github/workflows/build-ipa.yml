@@ -1,4 +1,4 @@
-name: Build iOS IPA
+name: Build iOS IPA v2
 
 on:
   workflow_dispatch:
@@ -54,15 +54,17 @@ jobs:
             echo "WEB_DIR=www" >> $GITHUB_ENV
           fi
 
-      - name: Setup Capacitor iOS
+      - name: Setup Capacitor iOS & Info.plist
         run: |
           cd "$WORK_DIR"
           npm install --legacy-peer-deps @capacitor/core @capacitor/cli @capacitor/ios
           rm -f capacitor.config.json capacitor.config.ts
-          npx cap init "Benzto2 Admin" "com.benzto2.admin" --web-dir="$WEB_DIR"
+          npx cap init "Benzto2 Admin" "com.benzto2.modstore" --web-dir="$WEB_DIR"
           rm -rf ios
           npx cap add ios
           npx cap sync ios
+          /usr/libexec/PlistBuddy -c "Add :NSAppTransportSecurity dict" ios/App/App/Info.plist || true
+          /usr/libexec/PlistBuddy -c "Add :NSAppTransportSecurity:NSAllowsArbitraryLoads bool true" ios/App/App/Info.plist || true
 
       - name: Build Unsigned Archive
         run: |
@@ -73,15 +75,16 @@ jobs:
             xcodebuild -project ios/App/App.xcodeproj -scheme App -configuration Release -sdk iphoneos -destination 'generic/platform=iOS' -archivePath "$WORK_DIR/build/App.xcarchive" archive DEVELOPMENT_TEAM="" CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO
           fi
 
-      - name: Package IPA
+      - name: Package IPA Properly
         run: |
           cd "$WORK_DIR"
+          rm -rf Payload "$GITHUB_WORKSPACE/Benzto2-Admin-v2.ipa"
           mkdir -p Payload
-          cp -r build/App.xcarchive/Products/Applications/App.app Payload/
-          zip -r "$GITHUB_WORKSPACE/Benzto2-Admin.ipa" Payload
+          cp -Rp build/App.xcarchive/Products/Applications/App.app Payload/
+          zip -ry "$GITHUB_WORKSPACE/Benzto2-Admin-v2.ipa" Payload
 
       - name: Upload IPA Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Benzto2-Admin-IPA
-          path: Benzto2-Admin.ipa
+          name: Benzto2-Admin-IPA-v2
+          path: Benzto2-Admin-v2.ipa
